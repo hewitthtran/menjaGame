@@ -1,4 +1,3 @@
-
 // Set a Timing multiplier for our game engine.
 let menjaGameSpeed = 1;
 
