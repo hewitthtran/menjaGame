@@ -1,0 +1,291 @@
+body {
+    margin: 0;
+    background-color: #000;
+    background-image: radial-gradient(ellipse at top, #335476 0.0%, #31506e 11.1%, #304b67 22.2%, #2f4760 33.3%, #2d4359 44.4%, #2c3f51 55.6%, #2a3a4a 66.7%, #293643 77.8%, #28323d 88.9%, #262e36 100.0%);
+    height: 100vh;
+    /* vh ~ Viewport Height (10vh = 10% of entire visible screen height */
+    overflow: hidden;
+    /* overflow property specifies what should happen if content overflows element's box */
+
+    font-family: monospace;
+    font-weight: bold;
+    letter-spacing: 0.06em;
+    /* em ~ relative to font-size of element (2em = 2 times size of current font size */
+    color: rgba(255,255,255,0.75);
+}
+
+/* # ~ ID selector */
+/* . ~ Class selector */
+#canvas {
+    display: block;
+    touch-action: none;
+    transform: translateZ(0);
+}
+
+/* HUD */
+.hud__score,
+.pause-button {
+    position:fixed;
+    font-size: calc(14px + 2vw + 1vh);
+    /* calc ~ Perform calculations when specifying CSS property values */
+    /* vw ~ Viewport Width */
+}
+
+.hud__score {
+    top: 0.65em;
+    left: 0.65em;
+    pointer-events: none;
+    /* pointer-events ~ Defines whether or not an element reacts to pointer events (react to mouse/touch events) */
+    user-select: none;
+    /* user-select ~ Specifies whether text of element can be selected by user */
+}
+
+.cube-count-label {
+    font-size: 0.46em;
+}
+
+.pause-button{
+    position: fixed;
+    top: 0;
+    right:0;
+    padding: 0.8em 0.65em;
+
+}
+
+.pause-button>div {
+    position: relative;
+    width: 0.8em;
+    height: 0.8em;
+    opacity: 0.75;
+}
+
+.pause-button>div::before,
+.pause-button>div::after {
+    content: '';
+    display: block;
+    width: 34%;
+    height: 100%;
+    position: absolute;
+    background: #fff;
+}
+
+.pause-button>div::after {
+    right:0;
+}
+
+.slow-motion {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    pointer-events:none;
+    opacity:0;
+    transition: opacity 0.4s;
+    /* transition ~ provide way to control animation speed when changing CSS properties */
+    will-change: opacity;
+    /* will-change ~ optimizes animations by letting browser know which properties + elements just about to be changed */
+}
+
+.slow-motion::before{
+    content: 'SLOW-MOTION';
+    display: block;
+    font-size: calc(8px + 1vw + 0.5vh);
+    margin-left: 0.5em;
+    margin-bottom: 8px;
+}
+
+.slow-motion::after{
+    content: '';
+    display: block;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 1.5vh;
+    background-color: rgba(0,0,0,0.25);
+    z-index: -1;
+    /* z-index ~ Specifies stack order of an element (greater stack order always in front of an element with lower stack order) */
+}
+
+.slow-motion__bar {
+    height: 1.5vh;
+    background-color: rgba(255,255,255,0.75);
+    transform-origin: 0 0;
+}
+
+/* User Menus */
+.user-menus::before {
+    content: '';
+    pointer-events: none;
+    position: fixed;
+    /* position ~ defines type of positioning method used for an element */
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: #000;
+    opacity:0;
+    transition: opacity 0.2s;
+    transition-timing-function: ease-in;
+    /* transition-timing-function ~ Specifies spee curve of transition effect */
+}
+
+/* has ~ Selector that helps u select elements when they contain other elements that match selector you pass into has */
+.user-menus.has-active::before {
+    opacity: 0.08;
+    /* visibility: visible;
+    transform: translateY(0); */
+    transition-duration: 0.4s;
+    transition-timing-function: ease-out;
+    /* ease-out ~ transition effect with a slow end */
+}
+
+/* Not sure whay .interactive-mode actually does */
+.user-menus.interactive-mode::before {
+    opacity:0.02;
+}
+
+/* User Menu Containers */
+
+.menu {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    /* flex ~ flexible container display */
+    flex-direction: column;
+    justify-content: center;
+    /* justify-content ~ Defines how browser distributes space btwn. + around content items along main-axis of flex container and the inline axis of a grid container */
+    align-items: center;
+    user-select: none;
+    text-align: center;
+    color: rgba(255,255,255,0.9);
+    /* rgba (red, green, blue, alpha~opacity) */
+    opacity:0;
+    visibility:hidden;
+    transform: translateY(30px);
+    transition-property: opacity, visibility, transform;
+    transition-timing-function: ease-in;
+    /* ease-in ~  transition effect with a slow start*/
+}
+
+.menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    transition-duration: 0.4s;
+    transition-timing-function:ease-out;
+}
+
+.user-menus.interactive-mode .menu.active {
+    opacity: 0.6;
+}
+
+
+/* :: selectors ~ pseudo-elements */
+/* : selectors ~ pseudo-selectors */
+
+.user-menus:not(.interactive-mode) .menu.active>* {
+/* * ~ all elements of HTML file or inside another element*/
+    pointer-events:auto;
+}
+
+/* Common menu elements */
+h1 {
+    font-size: 4.5rem;
+    /* rem ~ root-em ~ element's font size relative to size of root element */
+    line-height:0.95;
+    text-align: center;
+    font-weight:bold;
+    margin: 0 0.65em 1em;
+    /* maring: top right bottom left */
+}
+
+h2 {
+    font-size: 1.25rem;
+    line-height: 1;
+    text-align:center;
+    font-weight:bold;
+    margin: -1em 0.65em 0 0;
+}
+
+.high-score-label {
+    font-size: 1.2rem;
+    margin: 0 0 2.5rem;
+}
+
+.final-score-label{
+    font-size: 1.2rem;
+    margin: 0 0 2.5rem;
+}
+
+button {
+    display: block;
+    position: relative;
+    width: 200px;
+    padding: 12px 20px;
+    /* padding ~ space btwn. its content and its border (top right/left bottom)*/
+    background: transparent;
+    border: none;
+    outline: none;
+    user-select: none;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 1.4rem;
+    color: #fff;
+    opacity: 0.75;
+    transition: opacity 0.3s;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(255,255,255,0.15);
+    transform: scale(0,0);
+    /* scale ~ transformation that resizes element on 2D plane -> resize horizontal/vertical dimensions */
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+    /* transition ~ change property values smoothly over given duration */
+
+}
+
+button:active {
+    opacity: 1;
+}
+
+button:active::before {
+    transform: scale(1,1);
+    opacity:1;
+}
+
+.credits {
+    position:fixed;
+    width: 100%;
+    left: 0;
+    bottom: 20px;
+}
+
+a {
+    color:white;
+}
+
+/* Make sure to only enable the hover state on large screens */
+
+/* @ ~ At-rules are special instructions for browser telling CSS how to behave */
+/* @media rule ~ used in media queries ti apply different styles to different media types/devices */
+/* https://www.w3schools.com/cssref/css3_pr_mediaquery.php */
+@media (min-width: 2015px) {
+    button:hover {
+        opacity: 1;
+    }
+}
+
+button:hover::before {
+    transform: scale(1,1);
+    opacity: 1;
+}
